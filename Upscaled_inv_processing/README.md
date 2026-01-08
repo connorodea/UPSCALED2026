@@ -131,7 +131,7 @@ http://YOUR_DOMAIN/downloads/upscaled-print-agent-macos.pkg
 
 ### TechLiquidators Watchlist Sync
 
-Use the CLI menu item **"Sync TechLiquidators watchlist + analyze"** to:
+Use the CLI menu item **"Sync TL watchlist + analyze"** to:
 
 - Pull your watchlist listings into `data/techliquidators`
 - Download manifests (if available)
@@ -149,6 +149,11 @@ Optional:
 - `TECHLIQUIDATORS_MAX_ITEMS`: limit number of watchlist items
 - `TECHLIQUIDATORS_FORCE_MANIFESTS`: `true` to re-download manifests
 - `TECHLIQUIDATORS_MIN_MARGIN`: minimum margin required for PASS (default `0.2`)
+- `TECHLIQUIDATORS_MARKETPLACE_FEE_RATE`: marketplace fee rate (default `0.13`)
+- `TECHLIQUIDATORS_OUTBOUND_SHIPPING_RATE`: outbound shipping rate (default `0.08`)
+- `TECHLIQUIDATORS_LABOR_RATE`: labor rate per hour (default `20`)
+- `TECHLIQUIDATORS_MINUTES_PER_UNIT`: labor minutes per unit (default `5`)
+- `TECHLIQUIDATORS_WAREHOUSE_FEE`: fixed warehouse cost per pallet (default `0`)
 - `OPENAI_MODEL`: default `gpt-5.2`
 
 #### Getting TechLiquidators cookies

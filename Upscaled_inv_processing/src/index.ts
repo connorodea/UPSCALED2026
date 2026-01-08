@@ -1483,7 +1483,7 @@ class InventoryProcessor {
           new inquirer.Separator(),
           new inquirer.Separator(chalk.dim('— Sourcing —')),
           {
-            name: chalk.yellow('👁️  Sync TechLiquidators watchlist + analyze'),
+            name: chalk.yellow('👁️  Sync TL watchlist + analyze'),
             value: 'techliquidators-watchlist'
           },
           new inquirer.Separator(),
@@ -2188,14 +2188,64 @@ class InventoryProcessor {
 
 }
 
+function printHelp(): void {
+  console.log(`
+Usage:
+  upscaled [command]
+
+Commands:
+  doctor           Run diagnostics (Upscaled Doctor)
+  -h, --help       Show this help menu
+
+Menu Actions:
+  Products:
+    Add new product (no photos)
+    Add new product (with photos)
+    Receive manifest / generate PID-UID labels
+  Sourcing:
+    Sync TL watchlist + analyze
+  Labels & Printing:
+    Print last SKU label
+    Photo intake (auto PID-UID)
+    Start photo watcher (background)
+    Stop photo watcher (background)
+    List printers
+  Inventory:
+    Delete last product entered
+    Delete product
+    View inventory CSV
+    View current batch CSV
+    Analytics dashboard
+    Build inventory hub (master manifests)
+  Batches:
+    List batch on eBay
+    View batch status
+    Reset batch counter
+    Complete current batch early
+  Marketplaces:
+    Cross-list batch to marketplaces
+    View marketplace status (by SKU)
+  General:
+    Exit
+`.trim());
+  console.log('');
+}
+
 // Main entry point
 const processor = new InventoryProcessor();
 const args = process.argv.slice(2).map(arg => arg.toLowerCase());
-if (args.includes('doctor')) {
+if (args.includes('-h') || args.includes('--help') || args.includes('help')) {
+  printHelp();
+  process.exit(0);
+} else if (args.includes('doctor')) {
   processor.runDoctor().catch(error => {
     console.error(chalk.red.bold('\n❌ Doctor failed:'), error);
     process.exit(1);
   });
+} else if (args.length > 0) {
+  console.log(chalk.red(`Unknown command: ${args.join(' ')}`));
+  printHelp();
+  process.exit(1);
 } else {
   processor.run().catch(error => {
     console.error(chalk.red.bold('\n❌ Fatal error:'), error);
