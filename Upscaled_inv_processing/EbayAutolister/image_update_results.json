@@ -1,0 +1,29 @@
+{
+  "updated": 0,
+  "failed": 45,
+  "total": 45,
+  "model_image_cache": {
+    "Samsung_SM-R890": [],
+    "Samsung_SM-R865U": [],
+    "Samsung_SM-R820": [],
+    "Samsung_SM-R870": [],
+    "Samsung_SM-R830": [],
+    "Samsung_SM-R760": [],
+    "Samsung_SM-R860": [],
+    "Samsung_SM-T510": [],
+    "Samsung_SM-T290": [],
+    "Samsung_SM-P610NZAAXAR": [],
+    "SAMSUNG_SM-P610NZAAXAR": [],
+    "SAMSUNG_SM-T290": [],
+    "SAMSUNG_SM-T500NZAAXAR": [],
+    "SAMSUNG_SM-T290NZKAXAR": [],
+    "SAMSUNG_SM-T380": [],
+    "SAMSUNG_SM-R810": [],
+    "SAMSUNG_SM-T510": [],
+    "SAMSUNG_SM-T720": [],
+    "SAMSUNG_SM-T870NZKAXAR": [],
+    "SAMSUNG_SM-T860": [],
+    "SAMSUNG_SM-T290NZSKXAR": [],
+    "SAMSUNG_SM-T220NZAAXAR": []
+  }
+}

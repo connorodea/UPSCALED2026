@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "products_enriched": 16,
+  "enriched_csv": "enriched_20251127_101239.csv",
+  "inventory_created": 0,
+  "inventory_failed": 16,
+  "listings_created": 0,
+  "listings_failed": 0,
+  "successful_listings": [],
+  "failed_listings": []
+}
