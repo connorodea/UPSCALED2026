@@ -129,6 +129,46 @@ http://YOUR_DOMAIN/downloads/upscaled-print-agent-macos.pkg
 5. **List printers** - View available CUPS printers
 6. **Exit** - Close the application
 
+### TechLiquidators Watchlist Sync
+
+Use the CLI menu item **"Sync TechLiquidators watchlist + analyze"** to:
+
+- Pull your watchlist listings into `data/techliquidators`
+- Download manifests (if available)
+- Analyze profitability (50% MSRP resale estimate + LLM verdict)
+
+Required environment variables:
+
+- `TECHLIQUIDATORS_COOKIE_FILE`: path to a Netscape cookie file (recommended)
+- `OPENAI_API_KEY`: OpenAI key for LLM analysis
+
+Optional:
+
+- `TECHLIQUIDATORS_COOKIE`: raw cookie header string (alternative to file)
+- `TECHLIQUIDATORS_WATCHLIST_URL`: override watchlist URL
+- `TECHLIQUIDATORS_MAX_ITEMS`: limit number of watchlist items
+- `TECHLIQUIDATORS_FORCE_MANIFESTS`: `true` to re-download manifests
+- `TECHLIQUIDATORS_MIN_MARGIN`: minimum margin required for PASS (default `0.2`)
+- `OPENAI_MODEL`: default `gpt-5.2`
+
+#### Getting TechLiquidators cookies
+
+1) Install Playwright in the auction scraper environment:
+
+```bash
+cd ../08_AUTOMATION/CLI_Tools/auction_scraper
+pip install playwright
+playwright install
+```
+
+2) Run the cookie helper and log in:
+
+```bash
+python get_techliquidators_cookies.py
+```
+
+This writes the cookie file to `data/techliquidators/techliquidators_cookies.txt` by default.
+
 ### Product Entry
 
 When adding a product, you'll be prompted for:

@@ -31,6 +31,22 @@ python get_liquidation_cookies.py --browser chrome --out liquidation_cookies.txt
 python scrape_auctions.py --site liquidation --manifest --cookie-file liquidation_cookies.txt
 ```
 
+## TechLiquidators Watchlist
+
+Export cookies (requires Playwright):
+
+```bash
+pip install playwright
+playwright install
+python get_techliquidators_cookies.py
+```
+
+Sync watchlist items + manifests into the inventory CLI data folder:
+
+```bash
+python sync_techliquidators_watchlist.py --cookie-file Upscaled_inv_processing/data/techliquidators/techliquidators_cookies.txt
+```
+
 ## Master Manifest (Won Auctions)
 
 The inventory CLI tracks won manifests in `Upscaled_inv_processing/data/manifests.json`.

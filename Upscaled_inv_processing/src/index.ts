@@ -19,6 +19,7 @@ import { Product, Grade } from './types.js';
 import { PhotoManager } from './photoManager.js';
 import { ManifestManager, ManifestRecord } from './manifestManager.js';
 import { MarketplaceIntegration } from './marketplaceIntegration.js';
+import { TechLiquidatorsIntegration } from './techLiquidatorsIntegration.js';
 import { spawn } from 'child_process';
 
 class InventoryProcessor {
@@ -31,6 +32,7 @@ class InventoryProcessor {
   private photoManager: PhotoManager;
   private manifestManager: ManifestManager;
   private marketplaceIntegration: MarketplaceIntegration;
+  private techLiquidatorsIntegration: TechLiquidatorsIntegration;
   private hasShownDefaultMenuLabel: boolean;
 
   constructor() {
@@ -43,6 +45,7 @@ class InventoryProcessor {
     this.photoManager = new PhotoManager();
     this.manifestManager = new ManifestManager();
     this.marketplaceIntegration = new MarketplaceIntegration();
+    this.techLiquidatorsIntegration = new TechLiquidatorsIntegration();
     this.hasShownDefaultMenuLabel = false;
   }
 
@@ -1120,6 +1123,71 @@ class InventoryProcessor {
     return path.join(process.cwd(), 'data', 'photo-intake', 'watcher.pid');
   }
 
+  private async syncTechLiquidatorsWatchlist(): Promise<void> {
+    console.log(chalk.bold.cyan('\n━━━━━━━━ TECHLIQUIDATORS WATCHLIST ━━━━━━━━\n'));
+
+    const syncSpinner = ora(chalk.cyan('Syncing watchlist from TechLiquidators...')).start();
+    try {
+      const payload = await this.techLiquidatorsIntegration.syncWatchlist();
+      const count = payload?.items?.length ?? 0;
+      syncSpinner.succeed(chalk.green(`Watchlist synced (${count} items)`));
+    } catch (error) {
+      syncSpinner.fail(chalk.red('Watchlist sync failed'));
+      console.log(chalk.yellow(String(error)));
+      console.log('');
+      return;
+    }
+
+    const analyzeSpinner = ora(chalk.cyan('Analyzing manifests...')).start();
+    const results = await this.techLiquidatorsIntegration.analyzeWatchlist();
+    if (!results.length) {
+      analyzeSpinner.warn(chalk.yellow('No watchlist items available for analysis'));
+      console.log('');
+      return;
+    }
+    analyzeSpinner.succeed(chalk.green(`Analyzed ${results.length} items`));
+
+    const formatMoney = (value?: number) =>
+      typeof value === 'number' ? `$${value.toFixed(2)}` : 'n/a';
+    const formatPercent = (value?: number) =>
+      typeof value === 'number' ? `${(value * 100).toFixed(1)}%` : 'n/a';
+
+    const table = new Table({
+      style: { head: ['cyan'], border: ['grey'] },
+      colWidths: [14, 7, 10, 10, 10, 10, 12, 28]
+    });
+
+    table.push([
+      chalk.cyan('Auction ID'),
+      chalk.cyan('Decision'),
+      chalk.cyan('Cost'),
+      chalk.cyan('Resale'),
+      chalk.cyan('Profit'),
+      chalk.cyan('Margin'),
+      chalk.cyan('AI'),
+      chalk.cyan('Title')
+    ]);
+
+    for (const result of results) {
+      const decisionColor = result.decision === 'PASS' ? chalk.green : chalk.red;
+      const aiDecision = result.aiDecision ? result.aiDecision : 'n/a';
+      table.push([
+        result.auctionId,
+        decisionColor(result.decision),
+        formatMoney(result.costBasis),
+        formatMoney(result.estimatedResaleValue),
+        formatMoney(result.estimatedProfit),
+        formatPercent(result.estimatedMargin),
+        aiDecision,
+        result.title || ''
+      ]);
+    }
+
+    console.log('');
+    console.log(table.toString());
+    console.log('');
+  }
+
   private async buildInventoryHub(): Promise<void> {
     console.log(chalk.bold.cyan('\n━━━━━━━━ BUILD INVENTORY HUB ━━━━━━━━\n'));
 
@@ -1413,6 +1481,12 @@ class InventoryProcessor {
             value: 'receive-manifest'
           },
           new inquirer.Separator(),
+          new inquirer.Separator(chalk.dim('— Sourcing —')),
+          {
+            name: chalk.yellow('👁️  Sync TechLiquidators watchlist + analyze'),
+            value: 'techliquidators-watchlist'
+          },
+          new inquirer.Separator(),
           new inquirer.Separator(chalk.dim('— Labels & Printing —')),
           {
             name: chalk.cyan('🏷️   Print last SKU label'),
@@ -1513,6 +1587,11 @@ class InventoryProcessor {
       case 'receive-manifest':
         this.hasShownDefaultMenuLabel = true;
         await this.receiveManifest();
+        return true;
+
+      case 'techliquidators-watchlist':
+        this.hasShownDefaultMenuLabel = true;
+        await this.syncTechLiquidatorsWatchlist();
         return true;
 
       case 'print-last-label':
