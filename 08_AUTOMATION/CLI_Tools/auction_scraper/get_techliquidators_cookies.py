@@ -11,6 +11,12 @@ def parse_args() -> argparse.Namespace:
         description="Launch a browser, log into TechLiquidators, and export cookies."
     )
     parser.add_argument(
+        "--browser",
+        choices=["chromium", "webkit", "firefox"],
+        default="chromium",
+        help="Browser engine to launch (default: chromium)",
+    )
+    parser.add_argument(
         "--out",
         default="Upscaled_inv_processing/data/techliquidators/techliquidators_cookies.txt",
         help="Output cookie file (Netscape format)",
@@ -75,7 +81,20 @@ def main() -> int:
         return 1
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = None
+        last_error = None
+        browser_order = [args.browser, "webkit", "firefox"]
+        for name in browser_order:
+            if browser is not None:
+                break
+            try:
+                browser = getattr(p, name).launch(headless=False)
+            except Exception as exc:  # pragma: no cover
+                last_error = exc
+                browser = None
+                continue
+        if browser is None:
+            raise RuntimeError(f"Failed to launch browser: {last_error}")
         context = browser.new_context()
         page = context.new_page()
         page.goto(args.url, wait_until="domcontentloaded")
