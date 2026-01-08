@@ -1,0 +1,8 @@
+[Unit]
+Description=Upscaled Nightly Hub + Backup
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/upscaled/Upscaled_inv_processing
+EnvironmentFile=/etc/upscaled/inventory.env
+ExecStart=/bin/bash /opt/upscaled/Upscaled_inv_processing/deploy/nightly_hub_backup.sh

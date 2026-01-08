@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.upscaled.printagent</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/usr/local/bin/upscaled-print-agent</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>PRINT_AGENT_PORT</key>
+      <string>8788</string>
+    </dict>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/upscaled-print-agent.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/upscaled-print-agent.err</string>
+  </dict>
+</plist>

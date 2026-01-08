@@ -1,0 +1,164 @@
+{
+  "auction_id": "ml29530756",
+  "bid_count": "1",
+  "bid_history": [
+    {
+      "bid": "($661.46)",
+      "customer": "Co*********",
+      "date": "6 January 2026 at 00:15AM UTC"
+    }
+  ],
+  "buyer_premium_value": null,
+  "condition": "Uninspected Returns\n- Condition is unknown. Can be working or non-functional, and contain varying degrees of cosmetic wear. Accessories, cords, remotes/controllers, removable components, batteries, chargers, and manuals may not be included. Sets may be incomplete. Original packaging is not guaranteed.",
+  "current_bid_value": 661.46,
+  "default_shipping_cents": "60000",
+  "default_shipping_value": 600.0,
+  "description": "Ice Makers - GE Profile, Insignia",
+  "extracted_at": "2026-01-06T04:33:06.496551+00:00",
+  "images": [
+    "https://inventory.global.ssl.fastly.net/storage_location_photos/1323536/photo/bulq_full/SEALEDVIEW-1767627226813.jpg20260105-7104-z2xmci?1767627565",
+    "https://inventory.global.ssl.fastly.net/storage_location_photos/1323377/photo/bulq_full/SEALEDVIEW-1767382911494.jpg20260102-721716-giq16d?1767383326",
+    "https://inventory.global.ssl.fastly.net/storage_location_photos/1323240/photo/bulq_full/FRONTVIEW-1767231429493.jpg20260101-642641-9lbhai?1767231693"
+  ],
+  "items_count": "75",
+  "items_count_value": 75,
+  "kv_pairs": [
+    {
+      "label": "Lot ID",
+      "value": "ML29530756"
+    },
+    {
+      "label": "Total Items",
+      "value": "75"
+    },
+    {
+      "label": "Warehouse",
+      "value": "Shepherdsville, KY"
+    },
+    {
+      "label": "Weight",
+      "value": "2,572 lb"
+    },
+    {
+      "label": "Ice Makers",
+      "value": "75"
+    },
+    {
+      "label": "GE Profile",
+      "value": "50"
+    },
+    {
+      "label": "Insignia",
+      "value": "25"
+    }
+  ],
+  "latest_bid": {
+    "bid": "($661.46)",
+    "customer": "Co*********",
+    "date": "6 January 2026 at 00:15AM UTC"
+  },
+  "ld_json": [
+    {
+      "@context": "http://schema.org",
+      "@type": "Product",
+      "description": "Ice Makers - GE Profile, Insignia",
+      "image": [
+        "https://inventory.global.ssl.fastly.net/storage_location_photos/1323536/photo/bulq_full/SEALEDVIEW-1767627226813.jpg20260105-7104-z2xmci?1767627565",
+        "https://inventory.global.ssl.fastly.net/storage_location_photos/1323377/photo/bulq_full/SEALEDVIEW-1767382911494.jpg20260102-721716-giq16d?1767383326",
+        "https://inventory.global.ssl.fastly.net/storage_location_photos/1323240/photo/bulq_full/FRONTVIEW-1767231429493.jpg20260101-642641-9lbhai?1767231693"
+      ],
+      "name": "Ice Makers - GE Profile, Insignia",
+      "offers": {
+        "@type": "Offer",
+        "availability": "http://schema.org/InStock",
+        "price": "8363",
+        "priceCurrency": "USD",
+        "seller": {
+          "@type": "Organization",
+          "name": "BULQ"
+        }
+      }
+    }
+  ],
+  "lot_id": "ML29530756",
+  "lot_price_value": 661.46,
+  "lot_size": "Multi-Lot (3 Lots)",
+  "manifest_url": "https://www.techliquidators.com/pallet_manifests/ML29530756/ice-makers-ge-profile-insignia.xlsx",
+  "msrp_value": 33073.0,
+  "orig_retail": "Ice Makers - GE Profile, Insignia - Orig. Retail $33,073",
+  "orig_retail_value": 33073.0,
+  "outline_fields": {
+    "condition": "Uninspected Returns\n- Condition is unknown. Can be working or non-functional, and contain varying degrees of cosmetic wear. Accessories, cords, remotes/controllers, removable components, batteries, chargers, and manuals may not be included. Sets may be incomplete. Original packaging is not guaranteed.",
+    "lot size": "Multi-Lot (3 Lots)",
+    "warehouse": "Ships from Shepherdsville, KY"
+  },
+  "output_dir": "/Users/connorodea/Library/Mobile Documents/com~apple~CloudDocs/UPSCALED2026/01_SOURCING/Auctions/2026/TL_ml29530756_ice-makers-ge-profile-insignia",
+  "pallet_count_value": null,
+  "pricing_attrs": {
+    "bid-count": "1",
+    "current-bid": "",
+    "default-shipping-cents": "60000",
+    "items-count": "75",
+    "listing-name": "ML29530756",
+    "shipping-method": "Shipping",
+    "subtotal-cents": "66146"
+  },
+  "quantity_value": null,
+  "raw_kv_pairs": [
+    {
+      "label": "What if there is an issue with my order upon delivery? Should I refuse the order?",
+      "value": "If there is an issue with your delivery, please contact us within 24 hours and do not refuse the order, or else refusal charges will be applied. No refunds will be issued for orders refused at delivery or for failure to schedule delivery with our third-party freight carrier. If you ordered a pallet, please note any issues on the Bill of Lading (BOL) as well."
+    },
+    {
+      "label": "Is a resale certificate required?",
+      "value": "As of July 2023, valid resale certification is required to bid on TechLiquidators for new users. Please email a copy of all resale certificates to techliquidators@optoro.com as part of creating your account and allow 1 business day for your resale status to be confirmed. You will receive an email once your certificate has been approved and filed."
+    },
+    {
+      "label": "How can I contact TechLiquidators customer service?",
+      "value": "Calls to our Customer Care Team may result in longer than usual wait times. For faster service, please contact us via email at techliquidators@optoro.com By Email - techliquidators@optoro.com We aim to respond to all emails within 3-5 business days. By Phone - 1-888-803-7768 By Chat Mon-Fri: 10am-6pm ET Chat hours may be temporarily subject to change."
+    },
+    {
+      "label": "{{suggestion.label}}",
+      "value": "{{suggestion.text}}"
+    },
+    {
+      "label": "Lot ID",
+      "value": "ML29530756"
+    },
+    {
+      "label": "Total Items",
+      "value": "75"
+    },
+    {
+      "label": "Warehouse",
+      "value": "Shepherdsville, KY"
+    },
+    {
+      "label": "Weight",
+      "value": "2,572 lb"
+    },
+    {
+      "label": "Ice Makers",
+      "value": "75"
+    },
+    {
+      "label": "GE Profile",
+      "value": "50"
+    },
+    {
+      "label": "Insignia",
+      "value": "25"
+    }
+  ],
+  "retail_value_value": 33073.0,
+  "shipping_method": "Shipping",
+  "slug": "ice-makers-ge-profile-insignia",
+  "subtotal_cents": "66146",
+  "title": "Ice Makers - GE Profile, Insignia - Orig. Retail $33,073",
+  "total_items": "75",
+  "total_items_value": 75,
+  "url": "https://www.techliquidators.com/detail/ml29530756/ice-makers-ge-profile-insignia/",
+  "warehouse": "Ships from Shepherdsville, KY",
+  "weight": "2,572 lb",
+  "weight_lbs": 2572.0
+}

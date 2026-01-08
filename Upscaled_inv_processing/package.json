@@ -1,0 +1,60 @@
+{
+  "name": "inventory-processor",
+  "version": "1.0.0",
+  "description": "Inventory processing CLI with thermal label printing",
+  "main": "dist/index.js",
+  "bin": {
+    "upscaled": "dist/index.js"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "photo-watch": "tsx src/photoWatcher.ts",
+    "web:dev": "tsx src/webServer.ts",
+    "web:start": "node dist/webServer.js",
+    "print:dev": "tsx src/printAgent.ts",
+    "print:start": "node dist/printAgent.js"
+  },
+  "keywords": [
+    "inventory",
+    "cli",
+    "thermal-printer"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^6.2.0",
+    "@zxing/library": "^0.20.0",
+    "axios": "^1.13.2",
+    "boxen": "^7.1.1",
+    "bwip-js": "^4.8.0",
+    "canvas": "^2.11.2",
+    "chalk": "^5.3.0",
+    "cli-table3": "^0.6.3",
+    "cors": "^2.8.5",
+    "csv-writer": "^1.6.0",
+    "express": "^4.19.2",
+    "gradient-string": "^2.0.2",
+    "inquirer": "^9.2.12",
+    "jsbarcode": "^3.12.1",
+    "ora": "^8.0.1",
+    "qrcode": "^1.5.3",
+    "sharp": "^0.34.5",
+    "tesseract.js": "^5.0.4"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/gradient-string": "^1.1.6",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.10.6",
+    "@types/qrcode": "^1.5.5",
+    "esbuild": "^0.23.1",
+    "pkg": "^5.8.1",
+    "prisma": "^6.2.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.3"
+  }
+}

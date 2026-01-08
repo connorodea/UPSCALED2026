@@ -1,0 +1,14 @@
+[Unit]
+Description=Upscaled Inventory Web
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/upscaled/Upscaled_inv_processing
+EnvironmentFile=/etc/upscaled/inventory.env
+ExecStart=/usr/bin/node dist/webServer.js
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

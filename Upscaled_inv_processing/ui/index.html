@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upscaled Inventory Hub</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="bg-orbit"></div>
+    <div class="bg-grid"></div>
+
+    <div class="login-overlay" id="loginOverlay">
+      <form class="login-card" id="loginForm">
+        <p class="eyebrow">Secure Access</p>
+        <h2>Sign in to Ops Console</h2>
+        <input type="text" name="username" placeholder="Username (optional)" />
+        <input type="password" name="password" placeholder="Password" required />
+        <button class="btn btn-primary" type="submit">Unlock Console</button>
+        <p class="response" id="loginError"></p>
+      </form>
+    </div>
+
+    <div class="wizard-overlay" id="wizardOverlay">
+      <div class="wizard-card">
+        <div class="wizard-header">
+          <p class="eyebrow">Guided Setup</p>
+          <h2 id="wizardTitle">Welcome to Upscaled Ops</h2>
+        </div>
+        <p class="wizard-body" id="wizardBody"></p>
+        <div class="wizard-actions">
+          <button class="btn btn-ghost" id="wizardSkip">Skip for now</button>
+          <button class="btn btn-primary" id="wizardNext">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <aside class="sidebar">
+      <div class="brand">
+        <span>UPSCALED</span>
+        <small>Inventory Ops</small>
+      </div>
+      <nav>
+        <a href="#quickstart">Quick Start</a>
+        <a href="#manifest">Receive Manifest</a>
+        <a href="#process">Process Item</a>
+        <a href="#hub">Inventory Hub</a>
+        <a href="#batches">Batch Tools</a>
+        <a href="#inventory">Inventory CSV</a>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="btn btn-ghost" id="wizardLaunch">Run Guided Setup</button>
+        <a class="btn btn-ghost" href="/downloads/" target="_blank">Downloads</a>
+        <a class="btn btn-ghost" href="/sop.html" target="_blank">Open SOP</a>
+        <p>CLI remains fully supported.</p>
+      </div>
+    </aside>
+
+    <div class="app-shell">
+      <header class="hero">
+        <div class="hero-content">
+          <p class="eyebrow">Upscaled Ops Console</p>
+          <h1>Inventory, manifests, and batches in one place.</h1>
+          <p class="hero-subtitle">
+            A deployable interface for your core CLI workflows. Use the web app or the CLI,
+            with the same data underneath.
+          </p>
+          <div class="hero-actions">
+            <button class="btn btn-primary" id="refreshStatus">Refresh Status</button>
+            <button class="btn btn-ghost" id="buildHub">Build Inventory Hub</button>
+          </div>
+        </div>
+        <div class="hero-metrics">
+          <div class="metric">
+            <span class="metric-label">Current Batch</span>
+            <span class="metric-value" id="batchNumber">--</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Batch UID</span>
+            <span class="metric-value" id="batchId">--</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Items Remaining</span>
+            <span class="metric-value" id="itemsRemaining">--</span>
+          </div>
+          <div class="metric">
+            <span class="metric-label">Location</span>
+            <span class="metric-value" id="location">--</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="metrics-strip">
+        <div class="metric">
+          <span class="metric-label">Processed Items</span>
+          <span class="metric-value" id="totalProcessed">--</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Processed Today</span>
+          <span class="metric-value" id="processedToday">--</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Manifests</span>
+          <span class="metric-value" id="manifestCount">--</span>
+        </div>
+        <div class="metric">
+          <span class="metric-label">Unprocessed Units</span>
+          <span class="metric-value" id="unprocessedCount">--</span>
+        </div>
+      </section>
+
+      <main class="grid">
+        <section class="panel full" id="quickstart">
+          <div class="panel-header">
+            <h2>Quick Start Checklist</h2>
+            <p>Use this every day. Items save locally once checked.</p>
+          </div>
+          <div class="panel-body checklist">
+            <div class="response" id="printAgentStatus">Print agent: --</div>
+            <label class="checkbox"><input type="checkbox" data-check="printer" /> Printer connected and ready</label>
+            <label class="checkbox"><input type="checkbox" data-check="manifest" /> Manifest received and PID-UIDs printed</label>
+            <label class="checkbox"><input type="checkbox" data-check="labels" /> PID-UID labels applied to units</label>
+            <label class="checkbox"><input type="checkbox" data-check="process" /> At least 1 item processed today</label>
+            <label class="checkbox"><input type="checkbox" data-check="hub" /> Inventory hub updated</label>
+            <label class="checkbox"><input type="checkbox" data-check="batch" /> Batch exported (if completed)</label>
+            <div class="response" id="checklistStatus"></div>
+          </div>
+        </section>
+
+        <section class="panel" id="manifest">
+          <div class="panel-header">
+            <h2>Receive Manifest <span class="hint" data-tip="Use the manifest ID from TechLiquidators or invoices.">?</span></h2>
+            <p>Create PID-UID labels and anchor the lot.</p>
+          </div>
+          <form class="panel-body" id="manifestForm">
+            <label>
+              Manifest ID
+              <input type="text" name="manifestId" placeholder="ML29530756" required />
+            </label>
+            <label>
+              Unit Count
+              <input type="number" name="unitCount" min="1" required />
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="printLabels" />
+              Print PID-UID labels
+            </label>
+            <button class="btn btn-primary" type="submit">Generate Manifest</button>
+            <div class="response" id="manifestResponse"></div>
+          </form>
+        </section>
+
+        <section class="panel" id="process">
+          <div class="panel-header">
+            <h2>Process Inventory Item <span class="hint" data-tip="Start with PID-UID, then enter UPC or manufacturer/model.">?</span></h2>
+            <p>Enter PID-UID, set grade, add identifiers, and print the SKU.</p>
+          </div>
+          <form class="panel-body" id="productForm">
+            <div class="row">
+              <label>
+                PID-UID
+                <input type="text" name="pidUid" placeholder="P12-ID7" required />
+              </label>
+              <label>
+                Grade
+                <select name="grade" required>
+                  <option value="LN">LN</option>
+                  <option value="VG">VG</option>
+                  <option value="G">G</option>
+                  <option value="AC">AC</option>
+                  <option value="SA">SA</option>
+                </select>
+              </label>
+            </div>
+            <div class="row">
+              <label>
+                UPC <span class="hint" data-tip="Scan barcode if available.">?</span>
+                <input type="text" name="upc" placeholder="Optional" />
+              </label>
+              <label>
+                Manufacturer <span class="hint" data-tip="If UPC missing, enter manufacturer.">?</span>
+                <input type="text" name="manufacturer" placeholder="Optional" />
+              </label>
+            </div>
+            <div class="row">
+              <label>
+                Model <span class="hint" data-tip="Use model number from the unit.">?</span>
+                <input type="text" name="model" placeholder="Optional" />
+              </label>
+              <label>
+                Warehouse Tag <span class="hint" data-tip="Use BIN### format.">?</span>
+                <input type="text" name="warehouseTag" placeholder="BIN###" />
+              </label>
+            </div>
+            <label>
+              Notes
+              <textarea name="notes" rows="2" placeholder="Optional"></textarea>
+            </label>
+            <label class="checkbox">
+              <input type="checkbox" name="printLabel" checked />
+              Print SKU label
+            </label>
+            <button class="btn btn-primary" type="submit">Process Item</button>
+            <div class="response" id="productResponse"></div>
+          </form>
+        </section>
+
+        <section class="panel" id="hub">
+          <div class="panel-header">
+            <h2>Inventory Hub <span class="hint" data-tip="Downloads are master CSVs for analysis.">?</span></h2>
+            <p>Centralized view of unprocessed and processed inventory.</p>
+          </div>
+          <div class="panel-body">
+            <div class="hub-actions">
+              <button class="btn btn-ghost" id="openUnprocessed">Download Unprocessed CSV</button>
+              <button class="btn btn-ghost" id="openProcessed">Download Processed CSV</button>
+            </div>
+            <div class="response" id="hubResponse"></div>
+          </div>
+        </section>
+
+        <section class="panel" id="batches">
+          <div class="panel-header">
+            <h2>Batch Tools <span class="hint" data-tip="Export a batch once it's complete.">?</span></h2>
+            <p>Export a batch or view available batch files.</p>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <label>
+                Batch Number
+                <input type="number" name="batchNumber" id="batchNumberInput" min="1" placeholder="Current" />
+              </label>
+              <button class="btn btn-primary" id="exportBatch">Export Batch</button>
+            </div>
+            <div class="batch-list" id="batchList"></div>
+          </div>
+        </section>
+
+        <section class="panel full" id="inventory">
+          <div class="panel-header">
+            <h2>Inventory CSV <span class="hint" data-tip="Shows most recent processed items.">?</span></h2>
+            <p>Latest processed items from the inventory log.</p>
+          </div>
+          <div class="panel-body">
+            <div class="table" id="inventoryTable"></div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <p>CLI stays fully supported. This UI is a layer on top of the same data files.</p>
+      </footer>
+    </div>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

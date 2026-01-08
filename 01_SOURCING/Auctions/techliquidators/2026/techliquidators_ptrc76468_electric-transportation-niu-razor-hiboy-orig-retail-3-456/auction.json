@@ -1,0 +1,125 @@
+{
+  "auction_id": "ptrc76468",
+  "bid_count": "0",
+  "bid_history": [],
+  "buyer_premium_value": null,
+  "condition": "Uninspected Returns\n- Condition is unknown. Can be working or non-functional, and contain varying degrees of cosmetic wear. Accessories, cords, remotes/controllers, removable components, batteries, chargers, and manuals may not be included. Sets may be incomplete. Original packaging is not guaranteed.",
+  "current_bid_value": null,
+  "default_shipping_cents": "20000",
+  "default_shipping_value": 200.0,
+  "description": "Electric Transportation - NIU, Razor, HiBoy",
+  "extracted_at": "2026-01-06T22:01:38.383369+00:00",
+  "images": [
+    "https://inventory.global.ssl.fastly.net/storage_location_photos/1322347/photo/bulq_full/SEALEDVIEW-1766756682542.jpg20251226-391390-5j236n?1766756707"
+  ],
+  "items_count": "12",
+  "items_count_value": 12,
+  "kv_pairs": [
+    {
+      "label": "Lot ID",
+      "value": "PTRC76468"
+    },
+    {
+      "label": "Total Items",
+      "value": "12"
+    },
+    {
+      "label": "Warehouse",
+      "value": "Chino, CA"
+    },
+    {
+      "label": "Weight",
+      "value": "392 lb"
+    }
+  ],
+  "ld_json": [
+    {
+      "@context": "http://schema.org",
+      "@type": "Product",
+      "description": "Electric Transportation - NIU, Razor, HiBoy",
+      "image": [
+        "https://inventory.global.ssl.fastly.net/storage_location_photos/1322347/photo/bulq_full/SEALEDVIEW-1766756682542.jpg20251226-391390-5j236n?1766756707"
+      ],
+      "name": "Electric Transportation - NIU, Razor, HiBoy",
+      "offers": {
+        "@type": "Offer",
+        "availability": "http://schema.org/InStock",
+        "price": "547",
+        "priceCurrency": "USD",
+        "seller": {
+          "@type": "Organization",
+          "name": "BULQ"
+        }
+      }
+    }
+  ],
+  "lot_id": "PTRC76468",
+  "lot_price_value": 345.6,
+  "lot_size": "Pallet",
+  "manifest_url": "https://www.techliquidators.com/pallet_manifests/PTRC76468/electric-transportation-niu-razor-hiboy.xlsx",
+  "msrp_value": 3456.0,
+  "orig_retail": "Electric Transportation - NIU, Razor, HiBoy - Orig. Retail $3,456",
+  "orig_retail_value": 3456.0,
+  "outline_fields": {
+    "condition": "Uninspected Returns\n- Condition is unknown. Can be working or non-functional, and contain varying degrees of cosmetic wear. Accessories, cords, remotes/controllers, removable components, batteries, chargers, and manuals may not be included. Sets may be incomplete. Original packaging is not guaranteed.",
+    "lot size": "Pallet",
+    "warehouse": "Ships from Chino, CA"
+  },
+  "output_dir": "/Users/connorodea/Library/Mobile Documents/com~apple~CloudDocs/UPSCALED2026/01_SOURCING/Auctions/techliquidators/2026/techliquidators_ptrc76468_electric-transportation-niu-razor-hiboy-orig-retail-3-456",
+  "pallet_count_value": null,
+  "pricing_attrs": {
+    "bid-count": "0",
+    "current-bid": "",
+    "default-shipping-cents": "20000",
+    "items-count": "12",
+    "listing-name": "PTRC76468",
+    "shipping-method": "Shipping",
+    "subtotal-cents": "34560"
+  },
+  "quantity_value": null,
+  "raw_kv_pairs": [
+    {
+      "label": "What if there is an issue with my order upon delivery? Should I refuse the order?",
+      "value": "If there is an issue with your delivery, please contact us within 24 hours and do not refuse the order, or else refusal charges will be applied. No refunds will be issued for orders refused at delivery or for failure to schedule delivery with our third-party freight carrier. If you ordered a pallet, please note any issues on the Bill of Lading (BOL) as well."
+    },
+    {
+      "label": "Is a resale certificate required?",
+      "value": "As of July 2023, valid resale certification is required to bid on TechLiquidators for new users. Please email a copy of all resale certificates to techliquidators@optoro.com as part of creating your account and allow 1 business day for your resale status to be confirmed. You will receive an email once your certificate has been approved and filed."
+    },
+    {
+      "label": "How can I contact TechLiquidators customer service?",
+      "value": "Calls to our Customer Care Team may result in longer than usual wait times. For faster service, please contact us via email at techliquidators@optoro.com By Email - techliquidators@optoro.com We aim to respond to all emails within 3-5 business days. By Phone - 1-888-803-7768 By Chat Mon-Fri: 10am-6pm ET Chat hours may be temporarily subject to change."
+    },
+    {
+      "label": "{{suggestion.label}}",
+      "value": "{{suggestion.text}}"
+    },
+    {
+      "label": "Lot ID",
+      "value": "PTRC76468"
+    },
+    {
+      "label": "Total Items",
+      "value": "12"
+    },
+    {
+      "label": "Warehouse",
+      "value": "Chino, CA"
+    },
+    {
+      "label": "Weight",
+      "value": "392 lb"
+    }
+  ],
+  "retail_value_value": 3456.0,
+  "shipping_method": "Shipping",
+  "site": "techliquidators",
+  "subtotal_cents": "34560",
+  "title": "Electric Transportation - NIU, Razor, HiBoy - Orig. Retail $3,456",
+  "total_items": "12",
+  "total_items_value": 12,
+  "url": "https://www.techliquidators.com/detail/ptrc76468/electric-transportation-niu-razor-hiboy/",
+  "warehouse": "Ships from Chino, CA",
+  "weight": "392 lb",
+  "weight_lbs": 392.0
+}

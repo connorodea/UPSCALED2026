@@ -1,0 +1,235 @@
+// This is your Prisma schema file
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================
+// CORE INVENTORY TABLES
+// ============================================================
+
+model Product {
+  id        String   @id @default(uuid())
+  sku       String   @unique
+
+  // Existing fields from CSV (preserve current system)
+  grade         String   // LN, VG, G, AC, SA
+  location      String   // DEN001
+  batchId       String   @map("batch_id")
+  warehouseTag  String?  @map("warehouse_tag")
+
+  // Product details
+  upc           String?
+  manufacturer  String?
+  model         String?
+  notes         String?  @db.Text
+  palletId      String?  @map("pallet_id")
+  unitId        String?  @map("unit_id")
+  pidUid        String?  @map("pid_uid")
+  manifestId    String?  @map("manifest_id")
+
+  // Enhanced fields for cross-listing
+  title         String?  @db.Text
+  description   String?  @db.Text
+  category      String?
+  weightLbs     Decimal? @map("weight_lbs") @db.Decimal(10, 2)
+  dimensions    Json?    // {length, width, height}
+
+  // Base pricing (grade-based multiplier applied per marketplace)
+  basePrice     Decimal? @map("base_price") @db.Decimal(10, 2)
+  costBasis     Decimal? @map("cost_basis") @db.Decimal(10, 2)
+
+  // Metadata
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+  deletedAt     DateTime? @map("deleted_at") // Soft delete
+
+  // Relations
+  marketplaceListings MarketplaceListing[]
+  photos              Photo[]
+  pricingHistory      PricingHistory[]
+  syncLogs            SyncLog[]
+  batch               Batch? @relation(fields: [batchId], references: [batchNumber])
+
+  @@index([sku])
+  @@index([batchId])
+  @@index([grade])
+  @@index([createdAt])
+  @@map("products")
+}
+
+// Junction table for cross-listed items
+model MarketplaceListing {
+  id          String   @id @default(uuid())
+  productId   String   @map("product_id")
+  marketplace String   // 'ebay', 'poshmark', 'mercari', etc.
+
+  // Marketplace-specific IDs
+  externalId  String?  @map("external_id")  // eBay item ID, Poshmark listing ID, etc.
+  externalSku String?  @map("external_sku")
+
+  // Listing details (marketplace-specific)
+  title        String?  @db.Text
+  description  String?  @db.Text
+  price        Decimal  @db.Decimal(10, 2)
+  quantity     Int      @default(1)
+  status       String   // 'draft', 'active', 'sold', 'delisted', 'error'
+
+  // Marketplace-specific metadata
+  listingUrl        String?  @map("listing_url") @db.Text
+  marketplaceData   Json?    @map("marketplace_data") // Store platform-specific fields
+
+  // Sync tracking
+  lastSyncedAt  DateTime? @map("last_synced_at")
+  syncStatus    String?   @map("sync_status") // 'synced', 'pending', 'error'
+  errorMessage  String?   @map("error_message") @db.Text
+
+  // Timestamps
+  listedAt    DateTime? @map("listed_at")
+  soldAt      DateTime? @map("sold_at")
+  delistedAt  DateTime? @map("delisted_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, marketplace])
+  @@index([productId])
+  @@index([externalId])
+  @@index([marketplace])
+  @@index([status])
+  @@index([soldAt])
+  @@map("marketplace_listings")
+}
+
+// Product images with marketplace mapping
+model Photo {
+  id         String   @id @default(uuid())
+  productId  String   @map("product_id")
+
+  filePath   String   @map("file_path") @db.Text
+  fileName   String   @map("file_name")
+  fileSize   Int?     @map("file_size")
+  mimeType   String?  @map("mime_type")
+
+  // Photo metadata
+  displayOrder  Int     @default(0) @map("display_order")
+  isPrimary     Boolean @default(false) @map("is_primary")
+  altText       String? @map("alt_text") @db.Text
+
+  // Marketplace-specific URLs (uploaded to each platform)
+  marketplaceUrls Json?  @map("marketplace_urls") // {"ebay": "https://...", "poshmark": "https://..."}
+
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([isPrimary])
+  @@map("photos")
+}
+
+// ============================================================
+// BATCH PROCESSING (Preserve existing workflow)
+// ============================================================
+
+model Batch {
+  id            String   @id @default(uuid())
+  batchNumber   String   @unique @map("batch_number") // "B1", "B2", etc.
+  location      String
+
+  totalItems      Int      @default(0) @map("total_items")
+  processedItems  Int      @default(0) @map("processed_items")
+  status          String   // 'active', 'completed', 'exported'
+
+  startedAt    DateTime  @default(now()) @map("started_at")
+  completedAt  DateTime? @map("completed_at")
+  createdAt    DateTime  @default(now()) @map("created_at")
+
+  // Relations
+  products Product[]
+
+  @@index([batchNumber])
+  @@index([status])
+  @@map("batches")
+}
+
+// ============================================================
+// SYNC & AUDIT LOGGING
+// ============================================================
+
+model SyncLog {
+  id          String   @id @default(uuid())
+  productId   String?  @map("product_id")
+  marketplace String
+  operation   String   // 'list', 'update', 'delist', 'sold_detected'
+
+  status        String   // 'success', 'error', 'pending'
+  requestData   Json?    @map("request_data")
+  responseData  Json?    @map("response_data")
+  errorMessage  String?  @map("error_message") @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  product Product? @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([marketplace])
+  @@index([operation])
+  @@index([createdAt])
+  @@map("sync_logs")
+}
+
+// ============================================================
+// PRICING & ANALYTICS
+// ============================================================
+
+model PricingHistory {
+  id          String   @id @default(uuid())
+  productId   String   @map("product_id")
+  marketplace String
+
+  price      Decimal  @db.Decimal(10, 2)
+  changedBy  String   @map("changed_by")  // 'user', 'ai_optimization', 'bulk_update'
+  reason     String?  @db.Text
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relations
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([productId])
+  @@index([marketplace])
+  @@index([createdAt])
+  @@map("pricing_history")
+}
+
+// ============================================================
+// MARKETPLACE CONFIGURATION
+// ============================================================
+
+model MarketplaceConfig {
+  id             String   @id @default(uuid())
+  marketplace    String   @unique
+
+  enabled        Boolean  @default(true)
+  apiCredentials Json     @map("api_credentials") // Encrypted credentials
+  settings       Json?    // Platform-specific settings
+
+  lastSyncAt  DateTime? @map("last_sync_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
+
+  @@index([marketplace])
+  @@index([enabled])
+  @@map("marketplace_configs")
+}

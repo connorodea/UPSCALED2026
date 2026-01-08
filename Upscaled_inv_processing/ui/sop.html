@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Upscaled SOP - Receiving & Processing</title>
+    <style>
+      body { font-family: Arial, sans-serif; margin: 32px; color: #111; }
+      h1 { margin-bottom: 8px; }
+      h2 { margin-top: 24px; }
+      ol { line-height: 1.6; }
+      .note { background: #f2f2f2; padding: 12px 16px; border-radius: 8px; }
+      @media print { button { display: none; } }
+    </style>
+  </head>
+  <body>
+    <button onclick="window.print()">Print SOP</button>
+    <h1>Upscaled SOP</h1>
+    <p>Receiving + Processing Workflow</p>
+
+    <h2>1) Receive Manifest</h2>
+    <ol>
+      <li>Open the web app and go to <strong>Receive Manifest</strong>.</li>
+      <li>Enter the manifest ID and unit count.</li>
+      <li>Generate and print PID-UID labels.</li>
+      <li>Apply a PID-UID label to every unit as you unload.</li>
+    </ol>
+
+    <h2>2) Process Inventory</h2>
+    <ol>
+      <li>Go to <strong>Process Inventory Item</strong>.</li>
+      <li>Scan or type the PID-UID label.</li>
+      <li>Select grade.</li>
+      <li>Enter UPC or Manufacturer + Model.</li>
+      <li>Assign Warehouse Tag.</li>
+      <li>Print the SKU label and apply it to the unit.</li>
+    </ol>
+
+    <h2>3) Build Inventory Hub</h2>
+    <ol>
+      <li>Click <strong>Build Inventory Hub</strong> when you want fresh CSVs.</li>
+      <li>Download processed/unprocessed CSVs for analysis.</li>
+    </ol>
+
+    <h2>4) Export Batches</h2>
+    <ol>
+      <li>Use <strong>Batch Tools</strong> to export a batch.</li>
+      <li>Confirm the batch file is saved.</li>
+    </ol>
+
+    <div class="note">
+      <strong>Tip:</strong> If anything fails, retry the step or notify a lead. The CLI can still perform every action.
+    </div>
+  </body>
+</html>

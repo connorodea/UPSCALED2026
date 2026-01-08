@@ -1,0 +1,216 @@
+{
+  "auction_id": "csra397098",
+  "bid_count": "17",
+  "bid_history": [
+    {
+      "bid": "($4,151.00)",
+      "customer": "GS******",
+      "date": "6 January 2026 at 16:28PM UTC"
+    },
+    {
+      "bid": "$4,101.00",
+      "customer": "So************",
+      "date": "6 January 2026 at 16:28PM UTC"
+    },
+    {
+      "bid": "$4,100.00",
+      "customer": "GS******",
+      "date": "6 January 2026 at 16:28PM UTC"
+    },
+    {
+      "bid": "($4,000.00)",
+      "customer": "So************",
+      "date": "6 January 2026 at 16:28PM UTC"
+    },
+    {
+      "bid": "$3,950.00",
+      "customer": "GS******",
+      "date": "6 January 2026 at 16:28PM UTC"
+    },
+    {
+      "bid": "($3,800.00)",
+      "customer": "So************",
+      "date": "6 January 2026 at 16:28PM UTC"
+    },
+    {
+      "bid": "$3,750.00",
+      "customer": "GS******",
+      "date": "6 January 2026 at 16:28PM UTC"
+    },
+    {
+      "bid": "($3,500.00)",
+      "customer": "So************",
+      "date": "6 January 2026 at 16:27PM UTC"
+    },
+    {
+      "bid": "$3,450.00",
+      "customer": "GS******",
+      "date": "6 January 2026 at 16:27PM UTC"
+    },
+    {
+      "bid": "($2,975.00)",
+      "customer": "So************",
+      "date": "6 January 2026 at 13:53PM UTC"
+    },
+    {
+      "bid": "($2,125.00)",
+      "customer": "Na****",
+      "date": "4 January 2026 at 17:36PM UTC"
+    },
+    {
+      "bid": "($2,026.00)",
+      "customer": "Eu*********",
+      "date": "4 January 2026 at 03:04AM UTC"
+    },
+    {
+      "bid": "$2,001.00",
+      "customer": "Zk************",
+      "date": "4 January 2026 at 03:04AM UTC"
+    },
+    {
+      "bid": "($1,675.00)",
+      "customer": "Eu*********",
+      "date": "4 January 2026 at 03:04AM UTC"
+    },
+    {
+      "bid": "$1,650.00",
+      "customer": "Zk************",
+      "date": "4 January 2026 at 03:04AM UTC"
+    },
+    {
+      "bid": "($1,324.00)",
+      "customer": "Eu*********",
+      "date": "4 January 2026 at 00:18AM UTC"
+    },
+    {
+      "bid": "($1,084.98)",
+      "customer": "Co*************",
+      "date": "3 January 2026 at 23:34PM UTC"
+    }
+  ],
+  "buyer_premium_value": null,
+  "condition": "Used & Working\n- Items contain varying degrees of cosmetic wear. Main component has passed basic functionality tests. Accessories, cords, remotes/controllers, removable components, batteries, chargers, and manuals may not be included. Sets may be incomplete. Original packaging is not guaranteed.",
+  "current_bid_value": 4151.0,
+  "default_shipping_cents": "3000",
+  "default_shipping_value": 30.0,
+  "description": "Video Game Consoles - Nintendo, Nintendo of America",
+  "extracted_at": "2026-01-06T22:01:36.133406+00:00",
+  "images": [
+    "https://inventory.global.ssl.fastly.net/storage_location_photos/1323353/photo/bulq_full/CASEGUIDEVIEW-1767376456680.jpg20260102-698560-1dm50mn?1767376468"
+  ],
+  "items_count": "35",
+  "items_count_value": 35,
+  "kv_pairs": [
+    {
+      "label": "Lot ID",
+      "value": "CSRA397098"
+    },
+    {
+      "label": "Total Items",
+      "value": "35"
+    },
+    {
+      "label": "Warehouse",
+      "value": "Shepherdsville, KY"
+    },
+    {
+      "label": "Weight",
+      "value": "26 lb"
+    }
+  ],
+  "latest_bid": {
+    "bid": "($4,151.00)",
+    "customer": "GS******",
+    "date": "6 January 2026 at 16:28PM UTC"
+  },
+  "ld_json": [
+    {
+      "@context": "http://schema.org",
+      "@type": "Product",
+      "description": "Video Game Consoles - Nintendo, Nintendo of America",
+      "image": [
+        "https://inventory.global.ssl.fastly.net/storage_location_photos/1323353/photo/bulq_full/CASEGUIDEVIEW-1767376456680.jpg20260102-698560-1dm50mn?1767376468"
+      ],
+      "name": "Video Game Consoles - Nintendo, Nintendo of America",
+      "offers": {
+        "@type": "Offer",
+        "availability": "http://schema.org/InStock",
+        "price": "6052",
+        "priceCurrency": "USD",
+        "seller": {
+          "@type": "Organization",
+          "name": "BULQ"
+        }
+      }
+    }
+  ],
+  "lot_id": "CSRA397098",
+  "lot_price_value": 4151.0,
+  "lot_size": "Case",
+  "manifest_url": "https://www.techliquidators.com/pallet_manifests/CSRA397098/video-game-consoles-nintendo-nintendo-of-america.xlsx",
+  "msrp_value": 10850.0,
+  "orig_retail": "Video Game Consoles - Nintendo, Nintendo of America - Orig. Retail $10,850",
+  "orig_retail_value": 10850.0,
+  "outline_fields": {
+    "condition": "Used & Working\n- Items contain varying degrees of cosmetic wear. Main component has passed basic functionality tests. Accessories, cords, remotes/controllers, removable components, batteries, chargers, and manuals may not be included. Sets may be incomplete. Original packaging is not guaranteed.",
+    "lot size": "Case",
+    "warehouse": "Ships from Shepherdsville, KY"
+  },
+  "output_dir": "/Users/connorodea/Library/Mobile Documents/com~apple~CloudDocs/UPSCALED2026/01_SOURCING/Auctions/techliquidators/2026/techliquidators_csra397098_video-game-consoles-nintendo-nintendo-of-america-orig-retail-10-850",
+  "pallet_count_value": null,
+  "pricing_attrs": {
+    "bid-count": "17",
+    "current-bid": "",
+    "default-shipping-cents": "3000",
+    "items-count": "35",
+    "listing-name": "CSRA397098",
+    "shipping-method": "Shipping",
+    "subtotal-cents": "415100"
+  },
+  "quantity_value": null,
+  "raw_kv_pairs": [
+    {
+      "label": "What if there is an issue with my order upon delivery? Should I refuse the order?",
+      "value": "If there is an issue with your delivery, please contact us within 24 hours and do not refuse the order, or else refusal charges will be applied. No refunds will be issued for orders refused at delivery or for failure to schedule delivery with our third-party freight carrier. If you ordered a pallet, please note any issues on the Bill of Lading (BOL) as well."
+    },
+    {
+      "label": "Is a resale certificate required?",
+      "value": "As of July 2023, valid resale certification is required to bid on TechLiquidators for new users. Please email a copy of all resale certificates to techliquidators@optoro.com as part of creating your account and allow 1 business day for your resale status to be confirmed. You will receive an email once your certificate has been approved and filed."
+    },
+    {
+      "label": "How can I contact TechLiquidators customer service?",
+      "value": "Calls to our Customer Care Team may result in longer than usual wait times. For faster service, please contact us via email at techliquidators@optoro.com By Email - techliquidators@optoro.com We aim to respond to all emails within 3-5 business days. By Phone - 1-888-803-7768 By Chat Mon-Fri: 10am-6pm ET Chat hours may be temporarily subject to change."
+    },
+    {
+      "label": "{{suggestion.label}}",
+      "value": "{{suggestion.text}}"
+    },
+    {
+      "label": "Lot ID",
+      "value": "CSRA397098"
+    },
+    {
+      "label": "Total Items",
+      "value": "35"
+    },
+    {
+      "label": "Warehouse",
+      "value": "Shepherdsville, KY"
+    },
+    {
+      "label": "Weight",
+      "value": "26 lb"
+    }
+  ],
+  "retail_value_value": 10850.0,
+  "shipping_method": "Shipping",
+  "site": "techliquidators",
+  "subtotal_cents": "415100",
+  "title": "Video Game Consoles - Nintendo, Nintendo of America - Orig. Retail $10,850",
+  "total_items": "35",
+  "total_items_value": 35,
+  "url": "https://www.techliquidators.com/detail/csra397098/video-game-consoles-nintendo-nintendo-of-america/",
+  "warehouse": "Ships from Shepherdsville, KY",
+  "weight": "26 lb",
+  "weight_lbs": 26.0
+}
