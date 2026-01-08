@@ -13,6 +13,7 @@ import { BatchExporter } from './batchExporter.js';
 import { ManifestManager, ManifestRecord } from './manifestManager.js';
 import { generateSKU } from './skuGenerator.js';
 import { Product, Grade } from './types.js';
+import { isBatchFileForLocation } from './batchFiles.js';
 
 const app = express();
 const port = Number.parseInt(process.env.PORT || '8787', 10);
@@ -336,8 +337,9 @@ api.get('/batches', async (_req: Request, res: Response) => {
   } catch {
     files = [];
   }
-  const batchFiles = files.filter(file => /^B\d+\.csv$/i.test(file));
-  res.json({ batchFiles, currentBatch: batchManager.getCurrentBatchNumber() });
+  const location = batchManager.getLocation();
+  const batchFiles = files.filter(file => isBatchFileForLocation(file, location));
+  res.json({ batchFiles, currentBatch: batchManager.getCurrentBatchNumber(), location });
 });
 
 api.get('/metrics', async (_req: Request, res: Response) => {
@@ -572,7 +574,7 @@ api.post('/product', requireRole('staff'), async (req, res) => {
 
   const completedBatch = await batchManager.incrementItem();
   if (completedBatch !== null) {
-    await batchExporter.exportBatch(completedBatch);
+    await batchExporter.exportBatch(completedBatch, location);
   }
 
   const labelDownload = `/api/download/labels/${path.basename(labelPath)}`;
@@ -587,7 +589,7 @@ api.post('/batch/export', requireRole('admin'), async (req, res) => {
     return;
   }
 
-  await batchExporter.exportBatch(resolved);
+  await batchExporter.exportBatch(resolved, batchManager.getLocation());
   res.json({ batchNumber: resolved });
 });
 

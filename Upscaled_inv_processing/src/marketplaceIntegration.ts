@@ -8,6 +8,7 @@ import axios, { AxiosInstance } from 'axios';
 import type { Product } from './types.js';
 import fs from 'fs/promises';
 import path from 'path';
+import { isBatchFileForLocation, parseBatchFileName } from './batchFiles.js';
 
 export interface MarketplaceStatus {
   marketplace: string;
@@ -134,16 +135,19 @@ export class MarketplaceIntegration {
   /**
    * Get available batch files
    */
-  async getAvailableBatches(): Promise<string[]> {
+  async getAvailableBatches(location: string): Promise<string[]> {
     const dataDir = path.join(process.cwd(), 'data');
     try {
       const files = await fs.readdir(dataDir);
       const batchFiles = files
-        .filter(f => /^B\d+\.csv$/.test(f))
+        .filter(file => isBatchFileForLocation(file, location))
         .sort((a, b) => {
-          const numA = parseInt(a.match(/\d+/)?.[0] || '0');
-          const numB = parseInt(b.match(/\d+/)?.[0] || '0');
-          return numA - numB;
+          const parsedA = parseBatchFileName(a);
+          const parsedB = parseBatchFileName(b);
+          if (!parsedA || !parsedB) {
+            return a.localeCompare(b);
+          }
+          return parsedA.batchNumber - parsedB.batchNumber;
         });
       return batchFiles;
     } catch (error) {

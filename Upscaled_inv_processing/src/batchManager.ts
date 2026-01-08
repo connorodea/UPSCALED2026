@@ -2,7 +2,9 @@ import fs from 'fs/promises';
 import path from 'path';
 import { BatchState } from './types.js';
 
-const BATCH_STATE_FILE = path.join(process.cwd(), 'data', 'batch-state.json');
+const DATA_DIR = path.join(process.cwd(), 'data');
+const LEGACY_BATCH_STATE_FILE = path.join(DATA_DIR, 'batch-state.json');
+const LOCATION_STATE_FILE = path.join(DATA_DIR, 'location.json');
 const BATCH_SIZE = 50;
 const DEFAULT_LOCATION = 'DEN001';
 
@@ -20,19 +22,15 @@ export class BatchManager {
   }
 
   async load(): Promise<void> {
-    try {
-      const data = await fs.readFile(BATCH_STATE_FILE, 'utf-8');
-      const parsed = JSON.parse(data);
-      this.state = { ...this.state, ...parsed };
-    } catch (error) {
-      // If file doesn't exist, use default state
-      await this.save();
-    }
+    const location = await this.loadLocation();
+    await this.loadStateForLocation(location);
+    await this.persistState(this.state.location, this.state);
+    await this.persistLocation(this.state.location);
   }
 
   async save(): Promise<void> {
-    await fs.mkdir(path.dirname(BATCH_STATE_FILE), { recursive: true });
-    await fs.writeFile(BATCH_STATE_FILE, JSON.stringify(this.state, null, 2));
+    await this.persistState(this.state.location, this.state);
+    await this.persistLocation(this.state.location);
   }
 
   getCurrentBatchId(): string {
@@ -76,10 +74,15 @@ export class BatchManager {
     return this.state.location;
   }
 
-
   async setLocation(location: string): Promise<void> {
-    this.state.location = location;
-    await this.save();
+    if (location === this.state.location) {
+      return;
+    }
+
+    await this.persistState(this.state.location, this.state);
+    await this.loadStateForLocation(location);
+    await this.persistState(this.state.location, this.state);
+    await this.persistLocation(this.state.location);
   }
 
   getLastSku(): string | undefined {
@@ -102,5 +105,71 @@ export class BatchManager {
     this.state.currentBatchNumber++;
     this.state.currentItemNumber = 1;
     await this.save();
+  }
+
+  private getBatchStateFile(location: string): string {
+    return path.join(DATA_DIR, `batch-state-${location}.json`);
+  }
+
+  private getDefaultState(location: string): BatchState {
+    return {
+      currentBatchNumber: 1,
+      currentItemNumber: 1,
+      batchSize: BATCH_SIZE,
+      location,
+      lastSku: undefined
+    };
+  }
+
+  private async readJsonFile<T>(filePath: string): Promise<T | null> {
+    try {
+      const data = await fs.readFile(filePath, 'utf-8');
+      return JSON.parse(data) as T;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  private async loadLocation(): Promise<string> {
+    const locationState = await this.readJsonFile<{ location?: string }>(LOCATION_STATE_FILE);
+    if (locationState?.location) {
+      return locationState.location;
+    }
+
+    const legacyState = await this.readJsonFile<Partial<BatchState>>(LEGACY_BATCH_STATE_FILE);
+    if (legacyState?.location) {
+      return legacyState.location;
+    }
+
+    return DEFAULT_LOCATION;
+  }
+
+  private async loadStateForLocation(location: string): Promise<void> {
+    const defaultState = this.getDefaultState(location);
+    const batchStateFile = this.getBatchStateFile(location);
+    const batchState = await this.readJsonFile<Partial<BatchState>>(batchStateFile);
+
+    if (batchState) {
+      this.state = { ...defaultState, ...batchState, location };
+      return;
+    }
+
+    const legacyState = await this.readJsonFile<Partial<BatchState>>(LEGACY_BATCH_STATE_FILE);
+    if (legacyState && (legacyState.location ?? location) === location) {
+      this.state = { ...defaultState, ...legacyState, location };
+      return;
+    }
+
+    this.state = defaultState;
+  }
+
+  private async persistState(location: string, state: BatchState): Promise<void> {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(this.getBatchStateFile(location), JSON.stringify(state, null, 2));
+  }
+
+  private async persistLocation(location: string): Promise<void> {
+    await fs.mkdir(DATA_DIR, { recursive: true });
+    await fs.writeFile(LOCATION_STATE_FILE, JSON.stringify({ location }, null, 2));
   }
 }

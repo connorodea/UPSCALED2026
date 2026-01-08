@@ -20,6 +20,7 @@ import { PhotoManager } from './photoManager.js';
 import { ManifestManager, ManifestRecord } from './manifestManager.js';
 import { MarketplaceIntegration } from './marketplaceIntegration.js';
 import { TechLiquidatorsIntegration } from './techLiquidatorsIntegration.js';
+import { getBatchFilePath, getBatchFileName } from './batchFiles.js';
 import { spawn } from 'child_process';
 
 class InventoryProcessor {
@@ -74,6 +75,7 @@ class InventoryProcessor {
     await this.batchManager.load();
     await this.manifestManager.load();
 
+    spinner.stop();
     const { locationTag } = await inquirer.prompt([
       {
         type: 'list',
@@ -92,6 +94,7 @@ class InventoryProcessor {
       await this.batchManager.setLocation(locationTag);
     }
 
+    spinner.start();
     spinner.text = 'Detecting printer...';
     await this.printer.initialize();
     const watcherStatus = await this.startPhotoWatcher({ quiet: true });
@@ -358,19 +361,20 @@ class InventoryProcessor {
 
     // Increment batch counter and check for batch completion
     const completedBatch = await this.batchManager.incrementItem();
+    const location = this.batchManager.getLocation();
 
     // If batch completed, export it and list on eBay
     if (completedBatch !== null) {
       console.log('');
       const exportSpinner = ora(chalk.cyan(`Exporting completed batch ${completedBatch}...`)).start();
-      await this.batchExporter.exportBatch(completedBatch);
-      exportSpinner.succeed(chalk.green(`Batch ${completedBatch} exported successfully`));
+      await this.batchExporter.exportBatch(completedBatch, location);
+      exportSpinner.succeed(chalk.green(`Batch ${completedBatch} (${location}) exported successfully`));
 
       // List batch on eBay
       const ebaySpinner = ora(chalk.cyan(`Listing batch ${completedBatch} on eBay...`)).start();
       try {
-        await this.ebayIntegration.listBatchOnEbay(completedBatch);
-        ebaySpinner.succeed(chalk.green(`Batch ${completedBatch} listed on eBay successfully`));
+        await this.ebayIntegration.listBatchOnEbay(completedBatch, location);
+        ebaySpinner.succeed(chalk.green(`Batch ${completedBatch} (${location}) listed on eBay successfully`));
       } catch (error) {
         ebaySpinner.fail(chalk.yellow(`eBay listing skipped: ${error}`));
         console.log(chalk.dim('  You can list manually later using the eBay Autolister'));
@@ -378,7 +382,7 @@ class InventoryProcessor {
 
       console.log('');
       console.log(boxen(
-        chalk.bold.magenta(`🎉 BATCH ${completedBatch} COMPLETE!\n\n50 items processed, exported, and listed on eBay`),
+        chalk.bold.magenta(`🎉 BATCH ${completedBatch} (${location}) COMPLETE!\n\n50 items processed, exported, and listed on eBay`),
         {
           padding: 1,
           margin: { top: 0, bottom: 1 },
@@ -809,8 +813,9 @@ class InventoryProcessor {
 
   async viewCurrentBatchCsv(): Promise<void> {
     const batchNumber = this.batchManager.getCurrentBatchNumber();
-    const batchPath = path.join(process.cwd(), 'data', `B${batchNumber}.csv`);
-    await this.showCsvFile(`BATCH ${batchNumber} CSV`, batchPath);
+    const location = this.batchManager.getLocation();
+    const batchPath = getBatchFilePath(batchNumber, location);
+    await this.showCsvFile(`BATCH ${batchNumber} (${location}) CSV`, batchPath);
   }
 
 
@@ -1393,6 +1398,7 @@ class InventoryProcessor {
   async listBatchOnEbay(): Promise<void> {
     console.log(chalk.bold.magenta('\n━━━━━━━━ LIST BATCH ON EBAY ━━━━━━━━\n'));
 
+    const location = this.batchManager.getLocation();
     const { batchNumberInput } = await inquirer.prompt([
       {
         type: 'input',
@@ -1410,7 +1416,7 @@ class InventoryProcessor {
       return;
     }
 
-    const batchPath = path.join(process.cwd(), 'data', `B${batchNumber}.csv`);
+    const batchPath = getBatchFilePath(batchNumber, location);
     let batchFileExists = true;
 
     try {
@@ -1429,7 +1435,7 @@ class InventoryProcessor {
           type: 'confirm',
           name: 'confirmExport',
           message: chalk.bold.yellow(
-            `Batch file B${batchNumber}.csv not found. Export batch ${batchNumber} from inventory?`
+            `Batch file ${path.basename(batchPath)} not found. Export batch ${batchNumber} (${location}) from inventory?`
           ),
           default: true,
           prefix: '⚠️'
@@ -1442,14 +1448,14 @@ class InventoryProcessor {
       }
 
       const exportSpinner = ora(chalk.cyan(`Exporting batch ${batchNumber}...`)).start();
-      await this.batchExporter.exportBatch(batchNumber);
-      exportSpinner.succeed(chalk.green(`Batch ${batchNumber} exported successfully`));
+      await this.batchExporter.exportBatch(batchNumber, location);
+      exportSpinner.succeed(chalk.green(`Batch ${batchNumber} (${location}) exported successfully`));
     }
 
     const ebaySpinner = ora(chalk.cyan(`Listing batch ${batchNumber} on eBay...`)).start();
     try {
-      await this.ebayIntegration.listBatchOnEbay(batchNumber);
-      ebaySpinner.succeed(chalk.green(`Batch ${batchNumber} listed on eBay successfully`));
+      await this.ebayIntegration.listBatchOnEbay(batchNumber, location);
+      ebaySpinner.succeed(chalk.green(`Batch ${batchNumber} (${location}) listed on eBay successfully`));
     } catch (error) {
       ebaySpinner.fail(chalk.yellow(`eBay listing failed: ${error}`));
     }
@@ -1736,6 +1742,7 @@ class InventoryProcessor {
         this.hasShownDefaultMenuLabel = true;
         const currentBatch = this.batchManager.getCurrentBatchNumber();
         const currentItem = this.batchManager.getCurrentItemNumber();
+        const location = this.batchManager.getLocation();
 
         if (currentItem === 1) {
           console.log(chalk.yellow('\n⚠ Current batch has no items yet.\n'));
@@ -1756,8 +1763,8 @@ class InventoryProcessor {
 
         if (confirmComplete) {
           const exportSpinner = ora(chalk.cyan(`Exporting batch ${currentBatch}...`)).start();
-          await this.batchExporter.exportBatch(currentBatch);
-          exportSpinner.succeed(chalk.green(`Batch ${currentBatch} exported successfully`));
+          await this.batchExporter.exportBatch(currentBatch, location);
+          exportSpinner.succeed(chalk.green(`Batch ${currentBatch} (${location}) exported successfully`));
 
           // Move to next batch
           await this.batchManager.forceNextBatch();
@@ -1765,9 +1772,9 @@ class InventoryProcessor {
           console.log('');
           console.log(boxen(
             chalk.bold.magenta(
-              `🎉 BATCH ${currentBatch} COMPLETED EARLY!\n\n` +
-              `${currentItem - 1} items exported to B${currentBatch}.csv\n` +
-              `Now starting Batch ${currentBatch + 1}`
+              `🎉 BATCH ${currentBatch} (${location}) COMPLETED EARLY!\n\n` +
+              `${currentItem - 1} items exported to ${getBatchFileName(currentBatch, location)}\n` +
+              `Now starting Batch ${currentBatch + 1} (${location})`
             ),
             {
               padding: 1,
@@ -1833,11 +1840,13 @@ class InventoryProcessor {
     }
 
     // Get available batches
-    const availableBatches = await this.marketplaceIntegration.getAvailableBatches();
+    const availableBatches = await this.marketplaceIntegration.getAvailableBatches(
+      this.batchManager.getLocation()
+    );
 
     if (availableBatches.length === 0) {
       console.log(boxen(
-        chalk.yellow('⚠ No batch files found\n\n') +
+        chalk.yellow('⚠ No batch files found for this location\n\n') +
         chalk.dim('Complete a batch first to create batch files:\n') +
         chalk.cyan('Batches → Complete current batch early'),
         {

@@ -3,6 +3,7 @@ import path from 'path';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { EBAY_DEFAULTS, GRADE_TO_CONDITION, GRADE_PRICE_MULTIPLIER } from './ebayConfig.js';
+import { getBatchFilePath } from './batchFiles.js';
 
 const execAsync = promisify(exec);
 
@@ -20,22 +21,26 @@ export class EbayIntegration {
     ]);
   }
 
-  async listBatchOnEbay(batchNumber: number): Promise<void> {
+  async listBatchOnEbay(batchNumber: number, location: string): Promise<void> {
     try {
-      const batchFile = path.join(process.cwd(), 'data', `B${batchNumber}.csv`);
+      const batchFile = getBatchFilePath(batchNumber, location);
 
       // Check if batch file exists
       try {
         await fs.access(batchFile);
       } catch (error) {
-        throw new Error(`Batch file B${batchNumber}.csv not found`);
+        throw new Error(`Batch file ${path.basename(batchFile)} not found`);
       }
 
       // Read and transform batch CSV to eBay format
       const ebayCSV = await this.transformToEbayFormat(batchFile);
 
       // Create eBay-formatted CSV file
-      const ebayCSVPath = path.join(process.cwd(), 'data', `B${batchNumber}_ebay.csv`);
+      const ebayCSVPath = path.join(
+        process.cwd(),
+        'data',
+        `B${batchNumber}-${location}_ebay.csv`
+      );
       await fs.writeFile(ebayCSVPath, ebayCSV);
 
       console.log(`✓ Created eBay CSV: ${ebayCSVPath}`);
@@ -43,7 +48,7 @@ export class EbayIntegration {
       // Call eBay autolister CLI
       console.log(`📤 Listing Batch ${batchNumber} on eBay...`);
 
-      const command = `cd ${this.ebayAutolisterPath} && python3 cli.py process "../data/B${batchNumber}_ebay.csv" --create-offers`;
+      const command = `cd ${this.ebayAutolisterPath} && python3 cli.py process "../data/B${batchNumber}-${location}_ebay.csv" --create-offers`;
 
       const { stdout, stderr } = await execAsync(command);
 

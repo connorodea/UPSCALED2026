@@ -235,7 +235,8 @@ async function loadBatches() {
     const list = data.batchFiles.length
       ? data.batchFiles.join(', ')
       : 'No batch exports yet.';
-    batchList.textContent = list;
+    const locationLabel = data.location ? `${data.location}: ` : '';
+    batchList.textContent = `${locationLabel}${list}`;
   } catch (error) {
     batchList.textContent = 'Failed to load batches.';
   }
