@@ -1,23 +1,3 @@
-# OS
 .DS_Store
-
-# Python
-__pycache__/
-*.py[cod]
-
-# Logs/temp
-*.log
-*.pid
-*.tmp
-*.swp
-*.swo
-
-# Node
-node_modules/
-
-# Build outputs
-build/
-dist/
-
-# Local env overrides
-.env.*.local
+.venv/
+upscaled-tl/upscaled-sheets-sync.json

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.upscaled.tl-sheets-sync</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/Users/connorodea/Library/Mobile Documents/com~apple~CloudDocs/UPSCALED2026/.venv/bin/python</string>
+      <string>/Users/connorodea/Library/Mobile Documents/com~apple~CloudDocs/UPSCALED2026/upscaled-tl/sync_tl_google_sheet.py</string>
+      <string>--sheet-id</string>
+      <string>1jNTG59U_hQIGoR4uVu-zNDohfNDmzTKWn-w1PQRkSeA</string>
+      <string>--creds</string>
+      <string>/Users/connorodea/.config/upscaled/upscaled-sheets-sync.json</string>
+      <string>--base-dir</string>
+      <string>/Users/connorodea/Library/Mobile Documents/com~apple~CloudDocs/UPSCALED2026/upscaled-tl</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>259200</integer>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/connorodea/Library/Logs/upscaled-tl-sheets-sync.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/connorodea/Library/Logs/upscaled-tl-sheets-sync.err.log</string>
+  </dict>
+</plist>
