@@ -44,8 +44,20 @@ python get_techliquidators_cookies.py
 Sync watchlist items + manifests into the inventory CLI data folder:
 
 ```bash
-python sync_techliquidators_watchlist.py --cookie-file Upscaled_inv_processing/data/techliquidators/techliquidators_cookies.txt
+python sync_techliquidators_watchlist.py --cookie-file upscaled-tl/data/techliquidators/techliquidators_cookies.txt
 ```
+
+## TechLiquidators My Bids
+
+Sync your My Bids items into the inventory CLI data folder:
+
+```bash
+python sync_techliquidators_bids.py --cookie-file upscaled-tl/data/techliquidators/techliquidators_cookies.txt
+```
+
+Options:
+
+- `--bids-url`: override the My Bids URL
 
 ## Master Manifest (Won Auctions)
 

@@ -27,7 +27,7 @@ def main() -> None:
     parser.add_argument("--domain", default="techliquidators.com")
     parser.add_argument(
         "--out",
-        default="Upscaled_inv_processing/data/techliquidators/techliquidators_cookies.txt",
+        default="upscaled-tl/data/techliquidators/techliquidators_cookies.txt",
     )
     args = parser.parse_args()
 

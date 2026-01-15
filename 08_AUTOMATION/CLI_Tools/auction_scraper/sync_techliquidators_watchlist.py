@@ -10,7 +10,14 @@ from typing import Dict, List, Optional, Tuple
 from urllib.parse import urljoin, urlparse
 
 import requests
-from bs4 import BeautifulSoup
+try:
+    from bs4 import BeautifulSoup
+except ImportError:  # pragma: no cover
+    sys.stderr.write(
+        "Missing dependency: beautifulsoup4. Run `pip install -r requirements.txt` "
+        "in 08_AUTOMATION/CLI_Tools/auction_scraper.\n"
+    )
+    raise
 
 try:
     from openpyxl import load_workbook
@@ -26,6 +33,8 @@ from scrape_auctions import (
 
 
 WATCHLIST_URLS = [
+    "https://www.techliquidators.com/account/starred/lots",
+    "https://www.techliquidators.com/account/starred/lots?page=1",
     "https://www.techliquidators.com/account/watchlist",
     "https://www.techliquidators.com/watchlist",
     "https://www.techliquidators.com/user/watchlist",
@@ -39,7 +48,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--cookie-file", help="Netscape cookie file for TechLiquidators")
     parser.add_argument("--cookie-header", help="Raw Cookie header value")
     parser.add_argument("--watchlist-url", help="Override watchlist URL")
-    parser.add_argument("--out-dir", default="Upscaled_inv_processing/data/techliquidators")
+    parser.add_argument("--out-dir", default="upscaled-tl/data/techliquidators")
     parser.add_argument("--manifest-dir", default="manifests")
     parser.add_argument("--max-items", type=int, default=0)
     parser.add_argument("--force", action="store_true", help="Redownload manifests even if present")
@@ -94,6 +103,20 @@ def get_watchlist_html(session: requests.Session, url: str) -> Optional[str]:
     if "/login" in resp.url:
         return None
     return resp.text
+
+
+def fetch_watchlist_api(session: requests.Session) -> Optional[List[Dict[str, object]]]:
+    try:
+        resp = session.get("https://www.techliquidators.com/api/account/starred/lots", timeout=30)
+    except requests.RequestException:
+        return None
+    if resp.status_code != 200:
+        return None
+    try:
+        data = resp.json()
+    except ValueError:
+        return None
+    return data if isinstance(data, list) else None
 
 
 def extract_listing_urls(html: str, base_url: str) -> List[str]:
@@ -280,48 +303,110 @@ def main() -> int:
 
     watchlist_html = None
     watchlist_source = None
-    for url in watchlist_urls:
-        html = get_watchlist_html(session, url)
-        if html:
-            watchlist_html = html
-            watchlist_source = url
-            break
+    listing_urls: List[str] = []
+    api_items = fetch_watchlist_api(session)
+    if not api_items:
+        for url in watchlist_urls:
+            html = get_watchlist_html(session, url)
+            if html:
+                watchlist_html = html
+                watchlist_source = url
+                break
 
-    if not watchlist_html:
-        print("Failed to load TechLiquidators watchlist. Check cookies and URL.", file=sys.stderr)
-        return 1
+        if not watchlist_html:
+            print("Failed to load TechLiquidators watchlist. Check cookies and URL.", file=sys.stderr)
+            return 1
 
-    listing_urls = extract_listing_urls(watchlist_html, watchlist_source or "")
+        listing_urls = extract_listing_urls(watchlist_html, watchlist_source or "")
+    else:
+        watchlist_source = "https://www.techliquidators.com/api/account/starred/lots"
+        for entry in api_items:
+            pallet = entry.get("pallet") if isinstance(entry, dict) else None
+            if not isinstance(pallet, dict):
+                continue
+            path_value = pallet.get("path")
+            if isinstance(path_value, str) and path_value:
+                listing_urls.append(urljoin("https://www.techliquidators.com", path_value))
+        listing_urls = dedupe_urls(listing_urls)
     if args.max_items and args.max_items > 0:
         listing_urls = listing_urls[: args.max_items]
 
     items: List[Dict[str, object]] = []
     for url in listing_urls:
-        try:
-            resp = session.get(url, timeout=30)
-            if resp.status_code != 200:
+        detail = None
+        detail_source = None
+        if api_items:
+            matching = None
+            for entry in api_items:
+                pallet = entry.get("pallet") if isinstance(entry, dict) else None
+                if not isinstance(pallet, dict):
+                    continue
+                path_value = pallet.get("path")
+                if path_value and url.endswith(str(path_value)):
+                    matching = entry
+                    break
+            if matching:
+                detail = matching
+                detail_source = "watchlist_api"
+        if detail is None:
+            try:
+                resp = session.get(url, timeout=30)
+                if resp.status_code != 200:
+                    continue
+                detail = parse_techliquidators_detail(resp.text, resp.url)
+                detail_source = "detail_page"
+            except requests.RequestException:
                 continue
-            detail = parse_techliquidators_detail(resp.text, resp.url)
-        except requests.RequestException:
-            continue
 
-        auction_id = detail.get("auction_id") or extract_techliquidators_id(url) or safe_filename(url)
-        auction_id = str(auction_id)
+        auction_id = None
+        manifest_url = None
+        item: Dict[str, object] = {}
 
-        item: Dict[str, object] = {
-            "auction_id": auction_id,
-            "url": detail.get("url", url),
-            "title": detail.get("title"),
-            "current_bid_value": detail.get("current_bid_value"),
-            "lot_price_value": detail.get("lot_price_value"),
-            "msrp_value": detail.get("msrp_value"),
-            "retail_value_value": detail.get("retail_value_value"),
-            "items_count_value": detail.get("items_count_value"),
-            "condition": detail.get("condition"),
-            "warehouse": detail.get("warehouse"),
-            "auction_end": detail.get("auction_end"),
-            "manifest_url": detail.get("manifest_url"),
-        }
+        if detail_source == "watchlist_api" and isinstance(detail, dict):
+            pallet = detail.get("pallet", {})
+            auction = pallet.get("auction", {}) if isinstance(pallet, dict) else {}
+            auction_id = pallet.get("name") or auction.get("auction_id") or pallet.get("id")
+            path_value = pallet.get("path")
+            manifest_path = pallet.get("manifest_path")
+            if isinstance(manifest_path, str) and manifest_path:
+                manifest_url = urljoin("https://www.techliquidators.com", manifest_path)
+            warehouse = None
+            if pallet.get("warehouse_city") or pallet.get("warehouse_state"):
+                warehouse = f"{pallet.get('warehouse_city','')}, {pallet.get('warehouse_state','')}".strip(", ")
+            item = {
+                "auction_id": auction_id,
+                "url": urljoin("https://www.techliquidators.com", path_value) if path_value else url,
+                "title": pallet.get("title"),
+                "current_bid_value": (auction.get("current_price_cents") or 0) / 100 if auction else None,
+                "lot_price_value": (pallet.get("asking_price_cents") or 0) / 100,
+                "msrp_value": (pallet.get("extended_msrp_cents") or 0) / 100,
+                "retail_value_value": None,
+                "items_count_value": pallet.get("total_quantity"),
+                "shipping_cost_value": (pallet.get("shipping_cost_final_cents") or 0) / 100,
+                "condition": pallet.get("condition"),
+                "warehouse": warehouse,
+                "auction_end": auction.get("auction_ends_at") if auction else None,
+                "manifest_url": manifest_url,
+            }
+        elif isinstance(detail, dict):
+            auction_id = detail.get("auction_id") or extract_techliquidators_id(url) or safe_filename(url)
+            item = {
+                "auction_id": auction_id,
+                "url": detail.get("url", url),
+                "title": detail.get("title"),
+                "current_bid_value": detail.get("current_bid_value"),
+                "lot_price_value": detail.get("lot_price_value"),
+                "msrp_value": detail.get("msrp_value"),
+                "retail_value_value": detail.get("retail_value_value"),
+                "items_count_value": detail.get("items_count_value"),
+                "condition": detail.get("condition"),
+                "warehouse": detail.get("warehouse"),
+                "auction_end": detail.get("auction_end"),
+                "manifest_url": detail.get("manifest_url"),
+            }
+            manifest_url = detail.get("manifest_url")
+
+        auction_id = str(auction_id or safe_filename(url))
 
         detail_path = os.path.join(out_dir, "items", f"{safe_filename(auction_id)}.json")
         os.makedirs(os.path.dirname(detail_path), exist_ok=True)
@@ -329,7 +414,6 @@ def main() -> int:
             json.dump(detail, f, indent=2)
         item["detail_path"] = detail_path
 
-        manifest_url = detail.get("manifest_url")
         manifest_path = None
         manifest_summary = None
         if manifest_url:
